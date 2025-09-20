@@ -8,9 +8,12 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import ParkingLots from "./pages/ParkingLots";
-import Profile from "./pages/ProfilePage";
 import ParkingLotDetail from "./pages/ParkingLotDetail";
 import PaymentVerify from "./pages/PaymentVerifications";
+import MapPage from "./pages/MapPage";
+import ReservationsPage from "./pages/ReservationPage";
+import ProfilePage from "./pages/ProfilePage";
+import AdminDashboard from "./pages/AdminPage";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -20,14 +23,17 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          {/* <Route path="/" element={<Index />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/main" element={<ParkingLots />} />
           <Route path="*" element={<NotFound />} />
-          <Route path="/profile" element={<Profile/>} />
           <Route path="/parking-lot/:id" element={<ParkingLotDetail />} />
-          <Route path="/paymentverification/" element={<PaymentVerify/>} />
+          <Route path="/paymentverification/" element={<PaymentVerify />} />
+          <Route path="/" element={<MapPage />} />
+          <Route path="/reservations" element={<ReservationsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
