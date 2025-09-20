@@ -30,11 +30,11 @@ const ProfilePage = () => {
           <CardContent className="pt-6 space-y-4">
             <div>
               <label className="text-sm font-medium text-gray-600">Name</label>
-              <p className="text-base">User Name</p>
+              <p className="text-base">Chakib</p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-600">Email</label>
-              <p className="text-base">user@email.com</p>
+              <p className="text-base">cryptechs@gmail.com</p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-600">Phone</label>
