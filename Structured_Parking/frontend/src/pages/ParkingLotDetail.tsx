@@ -249,56 +249,281 @@ const ParkingLotDetail = () => {
         <div className="p-4">
           <h3 className="font-semibold text-gray-900 mb-3">Parking Occupancy</h3>
           
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          {/* Parking Map */}
+        <div className="p-4">
+          <h3 className="font-semibold text-gray-900 mb-3 flex items-center justify-between">
+            <span>Select Your Parking Spot</span>
+            <span className="text-sm font-normal text-gray-500">
+              {parkingSpaces.filter(s => s.isAvailable && !reservedSpots.has(s.id)).length} available
+            </span>
+          </h3>
+          
+          <div className="bg-gradient-to-br from-gray-700 to-gray-800 rounded-2xl p-4 shadow-2xl relative overflow-x-auto">
+            {/* Scroll hint for mobile */}
+            <div className="text-center text-white text-xs mb-2 opacity-75">
+              ← Swipe to explore parking areas →
+            </div>
             
+            <div className="min-w-[700px] mx-auto">
+              
+              {/* Top Section */}
+              <div className="flex items-start justify-center gap-0">
+                {/* Top Parking Spots */}
+                <div className="flex gap-[3px]">
+                  {Array.from({ length: 15 }, (_, i) => {
+                    const spaceId = `A${(i + 1).toString().padStart(2, "0")}`;
+                    const space = parkingSpaces.find((s) => s.id === spaceId);
+                    const isOccupied = !space?.isAvailable;
+                    const isSelected = space?.id === selectedSpot;
+                    const isReserved = reservedSpots.has(spaceId);
+                    
+                    return (
+                      <button
+                        key={spaceId}
+                        onClick={() => handleSpotSelect(spaceId)}
+                        disabled={isOccupied || isReserved}
+                        className={`relative w-12 h-20 rounded transition-all duration-300 ${
+                          isReserved ? "bg-blue-600 shadow-lg shadow-blue-500/50" :
+                          isSelected ? "bg-blue-500 shadow-xl shadow-blue-500/60 scale-110" :
+                          isOccupied ? "bg-gray-600/50" :
+                          "bg-white/95 hover:bg-blue-100 hover:scale-105"
+                        } ${
+                          !isOccupied && !isReserved ? "cursor-pointer active:scale-95" : "cursor-not-allowed opacity-60"
+                        }`}
+                      >
+                        <div className="absolute inset-[3px] border-2 border-gray-400/30 rounded-sm"></div>
+                        <div className="absolute top-1 left-1/2 -translate-x-1/2 text-[9px] font-bold text-gray-600">
+                          {spaceId}
+                        </div>
+                        {isSelected && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Car className="h-6 w-6 text-white drop-shadow-lg" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                {/* Top Right Barrier */}
+                <div className="w-8 h-20 ml-1 rounded relative overflow-hidden shadow-lg" style={{
+                  background: 'repeating-linear-gradient(135deg, #ef4444 0px, #ef4444 6px, white 6px, white 12px)'
+                }}>
+                </div>
+              </div>
 
-            <div className="space-y-3 overflow-x-auto">
-              {["Row 1", "Row 2", "Row 3", "Row 4", "Row 5"].map((row, rowIndex) => (
-                <div key={row}>
-                  <div className="text-xs font-medium text-blue-600 mb-1.5">{row}</div>
-                  <div className="flex space-x-1.5">
-                    {Array.from({ length: 10 }, (_, spotIndex) => {
-                      const spaceId = `${String.fromCharCode(65 + rowIndex)}${(spotIndex + 1)
-                        .toString()
-                        .padStart(2, "0")}`;
-                      const space = parkingSpaces.find((s) => s.id === spaceId);
-                      return (
-                        <button
-                          key={spaceId}
-                          onClick={() => handleSpotSelect(spaceId)}
-                          disabled={!space?.isAvailable || reservedSpots.has(spaceId)}
-                          className={`w-9 h-9 border-2 rounded-lg transition-all duration-300 flex items-center justify-center ${getSpaceColor(
-                            space
-                          )} ${
-                            space?.isAvailable && !reservedSpots.has(spaceId)
-                              ? "cursor-pointer active:scale-95"
-                              : "cursor-not-allowed"
-                          }`}
-                        >
-                          <Car className="h-4 w-4" />
-                        </button>
-                      );
-                    })}
+              {/* Top Horizontal Road */}
+              <div className="h-14 bg-gray-600 relative my-1 rounded shadow-inner">
+                <div className="absolute inset-0 flex items-center justify-around px-8">
+                  <span className="text-white/80 text-2xl">→</span>
+                  <span className="text-white/80 text-2xl">→</span>
+                  <span className="text-white/80 text-2xl">→</span>
+                </div>
+              </div>
+
+              {/* Middle Section */}
+              <div className="flex gap-0 justify-center">
+                {/* Left Barrier */}
+                <div className="w-8 h-64 rounded relative overflow-hidden mr-1 shadow-lg" style={{
+                  background: 'repeating-linear-gradient(135deg, #ef4444 0px, #ef4444 6px, white 6px, white 12px)'
+                }}>
+                </div>
+
+                {/* Left Vertical Parking */}
+                <div className="flex flex-col gap-[3px]">
+                  {Array.from({ length: 12 }, (_, i) => {
+                    const spaceId = `B${(i + 1).toString().padStart(2, "0")}`;
+                    const space = parkingSpaces.find((s) => s.id === spaceId);
+                    const isOccupied = !space?.isAvailable;
+                    const isSelected = space?.id === selectedSpot;
+                    const isReserved = reservedSpots.has(spaceId);
+                    
+                    return (
+                      <button
+                        key={spaceId}
+                        onClick={() => handleSpotSelect(spaceId)}
+                        disabled={isOccupied || isReserved}
+                        className={`relative w-20 h-5 rounded transition-all duration-300 ${
+                          isReserved ? "bg-blue-600 shadow-lg shadow-blue-500/50" :
+                          isSelected ? "bg-blue-500 shadow-xl shadow-blue-500/60 scale-110" :
+                          isOccupied ? "bg-gray-600/50" :
+                          "bg-white/95 hover:bg-blue-100 hover:scale-105"
+                        } ${
+                          !isOccupied && !isReserved ? "cursor-pointer active:scale-95" : "cursor-not-allowed opacity-60"
+                        }`}
+                      >
+                        <div className="absolute inset-[2px] border border-gray-400/30 rounded-sm"></div>
+                        <span className="text-[8px] font-bold text-gray-600 absolute left-1 top-1/2 -translate-y-1/2">
+                          {spaceId}
+                        </span>
+                        {isSelected && (
+                          <Car className="h-3 w-3 text-white absolute right-1 top-1/2 -translate-y-1/2 drop-shadow" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Central Vertical Road */}
+                <div className="w-28 bg-gray-600 mx-1 rounded shadow-inner relative">
+                  {/* Zebra Crossing Top */}
+                  <div className="absolute top-1 left-1/2 -translate-x-1/2 w-16 h-8 flex gap-[2px]">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} className="flex-1 bg-white/90 rounded-sm"></div>
+                    ))}
+                  </div>
+                  
+                  {/* Dashed center line */}
+                  <div className="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2 flex flex-col gap-2 py-3">
+                    {Array.from({ length: 15 }).map((_, i) => (
+                      <div key={i} className="flex-1 bg-yellow-300/70 rounded-full"></div>
+                    ))}
+                  </div>
+                  
+                  {/* Directional Arrows */}
+                  <div className="absolute top-[25%] left-[20%] text-white/80 text-xl drop-shadow">↑</div>
+                  <div className="absolute bottom-[25%] right-[20%] text-white/80 text-xl drop-shadow">↓</div>
+                  
+                  {/* Zebra Crossing Bottom */}
+                  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-16 h-8 flex gap-[2px]">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} className="flex-1 bg-white/90 rounded-sm"></div>
+                    ))}
                   </div>
                 </div>
-              ))}
+
+                {/* Right Vertical Parking */}
+                <div className="flex flex-col gap-[3px]">
+                  {Array.from({ length: 12 }, (_, i) => {
+                    const spaceId = `C${(i + 1).toString().padStart(2, "0")}`;
+                    const space = parkingSpaces.find((s) => s.id === spaceId);
+                    const isOccupied = !space?.isAvailable;
+                    const isSelected = space?.id === selectedSpot;
+                    const isReserved = reservedSpots.has(spaceId);
+                    
+                    return (
+                      <button
+                        key={spaceId}
+                        onClick={() => handleSpotSelect(spaceId)}
+                        disabled={isOccupied || isReserved}
+                        className={`relative w-20 h-5 rounded transition-all duration-300 ${
+                          isReserved ? "bg-blue-600 shadow-lg shadow-blue-500/50" :
+                          isSelected ? "bg-blue-500 shadow-xl shadow-blue-500/60 scale-110" :
+                          isOccupied ? "bg-gray-600/50" :
+                          "bg-white/95 hover:bg-blue-100 hover:scale-105"
+                        } ${
+                          !isOccupied && !isReserved ? "cursor-pointer active:scale-95" : "cursor-not-allowed opacity-60"
+                        }`}
+                      >
+                        <div className="absolute inset-[2px] border border-gray-400/30 rounded-sm"></div>
+                        <span className="text-[8px] font-bold text-gray-600 absolute left-1 top-1/2 -translate-y-1/2">
+                          {spaceId}
+                        </span>
+                        {isSelected && (
+                          <Car className="h-3 w-3 text-white absolute right-1 top-1/2 -translate-y-1/2 drop-shadow" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Right Barrier */}
+                <div className="w-8 h-64 ml-1 rounded relative overflow-hidden shadow-lg" style={{
+                  background: 'repeating-linear-gradient(135deg, #ef4444 0px, #ef4444 6px, white 6px, white 12px)'
+                }}>
+                </div>
+              </div>
+
+              {/* Bottom Horizontal Road */}
+              <div className="h-14 bg-gray-600 relative my-1 rounded shadow-inner">
+                <div className="absolute inset-0 flex items-center justify-around px-8">
+                  <span className="text-white/80 text-2xl">←</span>
+                  <span className="text-white/80 text-2xl">←</span>
+                  <span className="text-white/80 text-2xl">←</span>
+                </div>
+              </div>
+
+              {/* Bottom Section */}
+              <div className="flex items-start justify-center gap-0">
+                {/* Bottom Parking Spots */}
+                <div className="flex gap-[3px]">
+                  {Array.from({ length: 15 }, (_, i) => {
+                    const spaceId = `D${(i + 1).toString().padStart(2, "0")}`;
+                    const space = parkingSpaces.find((s) => s.id === spaceId);
+                    const isOccupied = !space?.isAvailable;
+                    const isSelected = space?.id === selectedSpot;
+                    const isReserved = reservedSpots.has(spaceId);
+                    
+                    return (
+                      <button
+                        key={spaceId}
+                        onClick={() => handleSpotSelect(spaceId)}
+                        disabled={isOccupied || isReserved}
+                        className={`relative w-12 h-20 rounded transition-all duration-300 ${
+                          isReserved ? "bg-blue-600 shadow-lg shadow-blue-500/50" :
+                          isSelected ? "bg-blue-500 shadow-xl shadow-blue-500/60 scale-110" :
+                          isOccupied ? "bg-gray-600/50" :
+                          "bg-white/95 hover:bg-blue-100 hover:scale-105"
+                        } ${
+                          !isOccupied && !isReserved ? "cursor-pointer active:scale-95" : "cursor-not-allowed opacity-60"
+                        }`}
+                      >
+                        <div className="absolute inset-[3px] border-2 border-gray-400/30 rounded-sm"></div>
+                        <div className="absolute top-1 left-1/2 -translate-x-1/2 text-[9px] font-bold text-gray-600">
+                          {spaceId}
+                        </div>
+                        {isSelected && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Car className="h-6 w-6 text-white drop-shadow-lg" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                {/* Bottom Right Barrier */}
+                <div className="w-8 h-20 ml-1 rounded relative overflow-hidden shadow-lg" style={{
+                  background: 'repeating-linear-gradient(135deg, #ef4444 0px, #ef4444 6px, white 6px, white 12px)'
+                }}>
+                </div>
+              </div>
+
             </div>
 
-            <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t text-xs">
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-white border-2 border-gray-300 rounded"></div>
-                <span>Available</span>
+            {/* Legend */}
+            <div className="mt-5 pt-4 border-t border-gray-600/50 flex flex-wrap items-center justify-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/95 rounded shadow-sm border-2 border-gray-400/30"></div>
+                <span className="text-white text-sm">Available</span>
               </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-gray-300 rounded"></div>
-                <span>Occupied</span>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-gray-600/50 rounded shadow-sm"></div>
+                <span className="text-white text-sm">Occupied</span>
               </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                <span>Selected</span>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-blue-500 rounded shadow-lg shadow-blue-500/50"></div>
+                <span className="text-white text-sm">Your Selection</span>
               </div>
             </div>
           </div>
+
+          {/* Status Bar */}
+          <div className="mt-4 bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse shadow-lg shadow-blue-500/50"></div>
+                <span className="text-sm font-medium text-gray-700">Live availability</span>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-gray-900">
+                  {parkingSpaces.filter(s => s.isAvailable && !reservedSpots.has(s.id)).length}
+                </p>
+                <p className="text-xs text-gray-500">spots available</p>
+              </div>
+            </div>
+          </div>
+        </div>
         </div>
       </main>
 
